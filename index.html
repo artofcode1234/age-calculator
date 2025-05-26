@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Age Calculator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+  body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #0a0a0a, #000dff);
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    padding: 20px;
+  }
+  .container {
+    background: rgba(17, 16, 16, 0.1);
+    padding: 30px 40px 40px 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+  }
+  h1 {
+    margin-bottom: 25px;
+    font-weight: 700;
+    font-size: 2.2rem;
+    text-shadow: 1px 1px 5px rgb(0 0 0 / 0.3);
+  }
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 1rem;
+    text-align: left;
+  }
+  input[type="date"] {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    box-sizing: border-box;
+    margin-bottom: 25px;
+    transition: box-shadow 0.3s ease;
+  }
+  input[type="date"]:focus {
+    box-shadow: 0 0 8px #4e6ef2;
+  }
+  button {
+    background-color: #4e6ef2;
+    border: none;
+    padding: 15px 30px;
+    color: #0c0c0c;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+  }
+  button:hover {
+    background-color: #0e0e0e;
+  }
+  .result {
+    margin-top: 35px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    background: rgba(13, 13, 13, 0.15);
+    padding: 18px;
+    border-radius: 12px;
+    box-shadow: inset 0 0 10px rgba(242, 240, 240, 0.2);
+  }
+  .error {
+    color: #ff7b7b;
+    font-weight: 600;
+    margin-top: -15px;
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+  <div class="container" role="main">
+    <h1>Age Calculator</h1>
+    <label for="birthdate">Enter your birth date:</label>
+    <input type="date" id="birthdate" aria-describedby="error" />
+    <div id="error" class="error" role="alert" aria-live="assertive"></div>
+    <button id="calculateBtn">Calculate Age</button>
+    <div id="result" class="result" aria-live="polite"></div>
+  </div>
+
+<script>
+  const birthdateInput = document.getElementById('birthdate');
+  const calculateBtn = document.getElementById('calculateBtn');
+  const resultDiv = document.getElementById('result');
+  const errorDiv = document.getElementById('error');
+
+  function calculateAge(birthDate) {
+    const now = new Date();
+    if (birthDate > now) {
+      return null; // Invalid future date
+    }
+    let years = now.getFullYear() - birthDate.getFullYear();
+    let months = now.getMonth() - birthDate.getMonth();
+    let days = now.getDate() - birthDate.getDate();
+
+    if (days < 0) {
+      months--;
+      // calculate days for previous month
+      const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+      days += prevMonth.getDate();
+    }
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+    return { years, months, days };
+  }
+
+  calculateBtn.addEventListener('click', () => {
+    errorDiv.textContent = '';
+    resultDiv.textContent = '';
+    if (!birthdateInput.value) {
+      errorDiv.textContent = 'Please select your birth date.';
+      return;
+    }
+    const birthDate = new Date(birthdateInput.value);
+    const age = calculateAge(birthDate);
+    if (!age) {
+      errorDiv.textContent = 'Birth date cannot be in the future.';
+      return;
+    }
+    resultDiv.textContent = `You are ${age.years} year${age.years !== 1 ? 's' : ''}, ${age.months} month${age.months !== 1 ? 's' : ''}, and ${age.days} day${age.days !== 1 ? 's' : ''} old.`;
+  });
+</script>
+</body>
+</html>
+
